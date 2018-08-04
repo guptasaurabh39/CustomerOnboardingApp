@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 
 import java.io.IOException;
 
+import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import io.restassured.response.Response;
@@ -22,7 +23,10 @@ public class AppTest {
 
 	@Test
 	public void test_read_excel() throws JsonParseException, JsonMappingException, IOException {
-		String filePath = "D:\\guptasaurabh39_Git\\Customer_0002.xlsx";
+//		String filePath = "D:/guptasaurabh39_Git/Customer_0002.xlsx";
+		String filePath = System.getProperty("inputFilePath");
+		System.out.println(filePath);
+		Reporter.log(filePath);
 		ReadExcel rEx = new ReadExcel(filePath);
 
 		Response res = given().when().get(
