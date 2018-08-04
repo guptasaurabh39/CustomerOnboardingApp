@@ -33,3 +33,104 @@ c.	Providing a pipeline would be a plus (consider this will be executed in a gri
 7)	Please use Git for version control. We expect you to send us a standard zip or tarball of your source code when you're done that includes Git metadata (the .git folder) in the tarball so we can look at your commit logs and understand how your solution evolved. Frequent commits are a huge plus.
 8)	Please do not check in class files, jars or other libraries or output from the build process. Use maven for build automation and dependency. 
 9)	Please write comprehensive unit tests/specs.
+
+
+
+
+
+## Assumpitons and Prerequisites
+
+Hosted an local API for tenant configuration with "http://localhost:8080/tenants/002/config" as below
+
+```
+{
+entities: [
+{
+entity: {
+name: "customer",
+attributes: [
+{
+attribute: {
+id: "1",
+name: "customerId",
+dataType: "Integer",
+parentAttributeId: "",
+nullable: "false"
+}
+},
+{
+attribute: {
+id: "2",
+name: "customerName",
+dataType: "String",
+parentAttributeId: "",
+nullable: "false"
+}
+}
+]
+}
+},
+{
+entity: {
+name: "address",
+attributes: [
+{
+attribute: {
+id: "3",
+name: "customerId",
+dataType: "Integer",
+parentAttributeId: "1",
+nullable: "false"
+}
+},
+{
+attribute: {
+id: "4",
+name: "addressLine",
+dataType: "String",
+parentAttributeId: "",
+nullable: "false"
+}
+},
+{
+attribute: {
+id: "5",
+name: "addressCity",
+dataType: "String",
+parentAttributeId: "",
+nullable: "true"
+}
+},
+{
+attribute: {
+id: "6",
+name: "addressState",
+dataType: "String",
+parentAttributeId: "",
+nullable: "true"
+}
+},
+{
+attribute: {
+id: "7",
+name: "addressZip",
+dataType: "Integer",
+parentAttributeId: "",
+nullable: "true"
+}
+},
+{
+attribute: {
+id: "8",
+name: "addressCountry",
+dataType: "String",
+parentAttributeId: "",
+nullable: "true"
+}
+}
+]
+}
+}
+]
+}
+```
