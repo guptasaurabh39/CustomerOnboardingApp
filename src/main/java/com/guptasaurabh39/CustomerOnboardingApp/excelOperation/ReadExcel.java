@@ -31,6 +31,20 @@ public class ReadExcel {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean isSheetNameAvailabel(String sheetName){
+		boolean flgSheetFound = false;
+		Iterator<Sheet> sheetIterator = workbook.sheetIterator();
+		Sheet currSheet;
+		while(sheetIterator.hasNext()){
+			currSheet = sheetIterator.next();
+			if(currSheet.getSheetName().equals(sheetName)){
+				flgSheetFound = true;
+				break;
+			}
+		}
+		return flgSheetFound;
+	}
 
 	public Sheet getSheet(String sheetName) {
 		return workbook.getSheet(sheetName);
@@ -52,4 +66,5 @@ public class ReadExcel {
 		return workSheet.getLastRowNum();
 	}
 
+	
 }

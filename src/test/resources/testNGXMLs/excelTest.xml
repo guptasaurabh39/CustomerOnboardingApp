@@ -2,7 +2,7 @@
 <suite name="excel Upload Rules Validation" verbose="1">
 	<test name="Rules-Validations">
 		<classes>
-			<class name="com.guptasaurabh39.CustomerOnboardingApp.AppTest" />
+			<class name="com.guptasaurabh39.CustomerOnboardingApp.tests.testExcel" />
 		</classes>
 	</test>
 </suite>
