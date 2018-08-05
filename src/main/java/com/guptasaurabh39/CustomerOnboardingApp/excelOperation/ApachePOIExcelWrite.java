@@ -8,12 +8,21 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class ApachePOIExcelWrite {
 
-	private static final String FILE_NAME = "D:/guptasaurabh39_Git/MyFirstExcel.xlsx";
+	private static final String FILE_NAME = "D:/guptasaurabh39_Git/Customer_0002.xlsx";
 
 	public static void main(String[] args) {
+		ReadExcel rEx = new ReadExcel(FILE_NAME);
+		List<String> lstData = rEx.getDataListByColumnName("address", "customerId");
+		for(String s:lstData){
+			System.out.println(s.toString());
+		}
+	}
+	
+	/*public static void main(String[] args) {
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("Datatypes in Java");
@@ -53,5 +62,5 @@ public class ApachePOIExcelWrite {
 		}
 
 		System.out.println("Done");
-	}
+	}*/
 }

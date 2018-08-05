@@ -7,16 +7,11 @@ import org.apache.poi.ss.usermodel.Row;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -53,6 +48,10 @@ public class testExcel {
 	public void getConfig() throws JsonParseException, JsonMappingException,
 			IOException {
 
+		inputFilePath = "D:/guptasaurabh39_Git/Customer_0002.xlsx";
+		outputFilePath = "D:/guptasaurabh39_Git/Customer_0002_Err.xlsx";
+		tenantId = "002";
+
 		DOMConfigurator.configure("log4j.xml");
 
 		inputFilePath = System.getProperty("inputFilePath");
@@ -71,6 +70,9 @@ public class testExcel {
 
 		Response res = given().when().get(
 				"http://localhost:8080/tenants/" + tenantId + "/config");
+		logger.debug("DEBUG : Config JSON for Tenant ID = " + tenantId
+				+ ">>>>>>>>>>>>>>>>>>>>>>>>>>.");
+		logger.debug(res.asString());
 		ObjectMapper objectMapper = new ObjectMapper();
 		myConfig = objectMapper.readValue(res.asString(), Config.class);
 
@@ -144,7 +146,7 @@ public class testExcel {
 				logger.debug("DEBUG : Entity Attribute Name = " + currAttrName);
 				if (rEx.isColumnHeaderAvailable(currentEntity.getName(),
 						currAttrName)) {
-					logger.debug("INFO : Excel Tab Name = "
+					logger.debug("DEBUG : Excel Tab Name = "
 							+ currentEntity.getName() + ", Attribute Name = "
 							+ currAttrName + " exists.");
 				} else {
@@ -162,7 +164,7 @@ public class testExcel {
 	}
 
 	@SuppressWarnings("deprecation")
-	@Test(enabled = true, priority = 3, dependsOnMethods = { "test_ExcelColumnHeader" }, description = "Excel column DataType test.")
+	@Test(enabled = true, priority = 3, dependsOnMethods = { "test_ExcelColumnHeader" }, description = "Excel column DataType Validation.")
 	public void test_ExcelColumnDataType() {
 		logger.info("TEST-SCENARIO : VALIDATE EXCEL COLUMN DATA-TYPE FOR TENANT = "
 				+ tenantId);
@@ -189,13 +191,14 @@ public class testExcel {
 				// For Each Row for Current Attribute.
 				for (int rowNum = 1; rowNum <= dataRowCnt; rowNum++) {
 					// IF Cell is Not Empty.
-					if (!(rEx.getSheet(currEntityName).getRow(rowNum).getCell(colNumForAttr, Row.RETURN_BLANK_AS_NULL) == null)) {
+					if (!(rEx.getSheet(currEntityName).getRow(rowNum)
+							.getCell(colNumForAttr, Row.RETURN_BLANK_AS_NULL) == null)) {
 						// IF Expected DataType is Integer
 						if (currAttrDataType.equalsIgnoreCase("Integer")) {
 							if (rEx.isCellValueNumeric(
 									rEx.getSheet(currEntityName), rowNum,
 									colNumForAttr)) {
-								logger.debug("INFO : " + currEntityName + ">>"
+								logger.debug("DEBUG : " + currEntityName + ">>"
 										+ currAttrName + ">>" + rowNum
 										+ " is an Integer value.");
 							} else {
@@ -212,7 +215,7 @@ public class testExcel {
 							if (rEx.isCellValueString(
 									rEx.getSheet(currEntityName), rowNum,
 									colNumForAttr)) {
-								logger.debug("INFO : " + currEntityName + ">>"
+								logger.debug("DEBUG : " + currEntityName + ">>"
 										+ currAttrName + ">>" + rowNum
 										+ " is a String value.");
 							} else {
@@ -229,5 +232,85 @@ public class testExcel {
 
 			}
 		}
+	}
+
+	@Test(enabled = true, priority = 4, dependsOnMethods = { "test_ExcelColumnDataType" }, description = "Excel Parent Attribute Validation.")
+	public void test_ExcelParentAttribute() {
+		logger.info("TEST-SCENARIO : VALIDATE EXCEL PARENT ATTRIBUTE FOR TENANT = "
+				+ tenantId);
+		Entity srcEntity;
+		Entity mtchEntity;
+
+		String srcEntityName;
+		String mtchEntityName;
+
+		Attribute srcAttribute;
+		Attribute mtchAttribute;
+
+		String srcParentAttributeId;
+		String srcPrntId;
+		String srcAttrName;
+		int srcColNum;
+
+		String mtchAttrId;
+		String mtchAttrName;
+
+		int colNumForAttr;
+		int dataRowCnt;
+
+		// Scan all Entity Attributes for Parent Attribute
+		// For each Entity
+		for (int i = 0; i < myConfig.getEntities().length; i++) {
+			srcEntity = myConfig.getEntities()[i].getEntity();
+			srcEntityName = myConfig.getEntities()[i].getEntity().getName();
+			// For Each Attribute in Current Entity.
+			for (int j = 0; j < srcEntity.getAttributes().length; j++) {
+				srcAttribute = srcEntity.getAttributes()[j].getAttribute();
+				srcAttrName = srcAttribute.getName();
+				srcColNum = rEx.getColNumForHeader(srcEntityName, srcAttrName);
+				srcParentAttributeId = srcAttribute.getParentAttributeId();
+				if (!(srcParentAttributeId.equals("") || srcParentAttributeId == null)) {
+					// Find the Parent Entity and Attribute
+					for (int prntEntyCnt = 0; prntEntyCnt < myConfig.getEntities().length; prntEntyCnt++) {
+						mtchEntity = myConfig.getEntities()[prntEntyCnt].getEntity();
+						for (int prntAtrCnt = 0; prntAtrCnt < mtchEntity.getAttributes().length; prntAtrCnt++) {
+							mtchAttribute = mtchEntity.getAttributes()[prntAtrCnt].getAttribute();
+							mtchAttrId = mtchAttribute.getId();
+							if (mtchAttrId.equals(srcParentAttributeId)) {
+								mtchAttrName = mtchAttribute.getName();
+								mtchEntityName = mtchEntity.getName();
+								// GET SOURCE ID LIST
+								List<String> lstSrcPrntIDs = rEx.getDataListByColumnName(srcEntityName, srcAttrName);
+								logger.debug("DEBUG : SOURCE : Data List : " + lstSrcPrntIDs.toString());
+								// GET MATCHING ID LIST
+								List<String> lstMtchPrntIDs = rEx.getDataListByColumnName(mtchEntity.getName(), mtchAttrName);
+								logger.debug("DEBUG : PARENT : Data List : " + lstMtchPrntIDs.toString());
+								// REPORT ERROR IF EXISTS
+								for (int idCnt = 0; idCnt < lstSrcPrntIDs.size(); idCnt++) {
+									if (!(isAvailableInList(lstMtchPrntIDs, lstSrcPrntIDs.get(idCnt)))) {
+										logger.error("ERROR : " + srcEntityName + ">>" + srcAttrName + ">>" + (idCnt + 2) + " is not a valid value.");
+										wEx.writeError(srcEntityName, idCnt + 2, srcColNum + 1, "This is not a valid value, Please correct. This is foreign key of "	+ mtchEntityName + ">>" + mtchAttrName);
+									}
+								}
+
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	private boolean isAvailableInList(List<String> lstMtchPrntIDs, String strValue) {
+		Iterator<String> iterator = lstMtchPrntIDs.iterator();
+		boolean flgFound = false;
+		while(iterator.hasNext()){
+			if(iterator.next().equalsIgnoreCase(strValue)){
+				flgFound = true;
+				break;
+			}
+		}
+		return flgFound;
 	}
 }

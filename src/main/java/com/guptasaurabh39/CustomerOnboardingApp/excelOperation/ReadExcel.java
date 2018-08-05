@@ -4,14 +4,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadExcel {
@@ -90,6 +95,47 @@ public class ReadExcel {
 
 	public int getRowCount(Sheet workSheet) {
 		return workSheet.getLastRowNum();
+	}
+	
+	public List<String> getDataListByColumnName(String sheetName, String headerName){
+		FormulaEvaluator objFormulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
+		DataFormatter objDefaultFormat = new DataFormatter();
+		
+		List<String> lstData = new ArrayList<String>();
+		boolean flgSheetFound = false;
+		boolean flgHeaderFound = false;
+		int columnID = -1;
+		int columnCount;
+		int rowNum = 0;
+		Iterator<Sheet> sheetIterator = workbook.sheetIterator();
+		Sheet currSheet;
+		while (sheetIterator.hasNext()) {
+			currSheet = sheetIterator.next();
+			rowNum = currSheet.getLastRowNum();
+			if (currSheet.getSheetName().equals(sheetName)) {
+				flgSheetFound = true;
+				columnCount = currSheet.getRow(0).getPhysicalNumberOfCells();
+				for (int i = 0; i < columnCount; i++) {
+					if (currSheet.getRow(0).getCell(i).getStringCellValue()
+							.equalsIgnoreCase(headerName)) {
+						flgHeaderFound = true;
+						columnID = i;
+						break;
+					}
+				}
+				break;
+			}
+		}
+		if(columnID > -1){
+			for(int i = 1; i <= rowNum; i++){
+				Cell cellValue = workbook.getSheet(sheetName).getRow(i).getCell(columnID);
+			    objFormulaEvaluator.evaluate(cellValue);
+			    String cellValueStr = objDefaultFormat.formatCellValue(cellValue,objFormulaEvaluator);
+
+				lstData.add(cellValueStr);
+			}
+		}
+		return lstData;
 	}
 
 	@SuppressWarnings("deprecation")
