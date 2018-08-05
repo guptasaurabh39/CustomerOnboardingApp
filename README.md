@@ -42,10 +42,10 @@ c.	Providing a pipeline would be a plus (consider this will be executed in a gri
 
 Hosted an local API for tenant configuration with "http://localhost:8080/tenants/002/config" as below
 
-```
+```json
 {
-<br>entities: [
-<br>{
+entities: [
+{
 entity: {
 name: "customer",
 attributes: [
