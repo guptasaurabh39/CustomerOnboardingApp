@@ -4,13 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -71,7 +70,6 @@ public class ReadExcel {
 		}
 		return (flgSheetFound && flgHeaderFound);
 	}
-	
 
 	public Sheet getSheet(String sheetName) {
 		return workbook.getSheet(sheetName);
@@ -92,6 +90,41 @@ public class ReadExcel {
 
 	public int getRowCount(Sheet workSheet) {
 		return workSheet.getLastRowNum();
+	}
+
+	@SuppressWarnings("deprecation")
+	public boolean isCellValueNumeric(Sheet workSheet, int row, int column) {
+		CellType cellType = workSheet.getRow(row).getCell(column)
+				.getCellTypeEnum();
+		if (cellType.equals(CellType.NUMERIC)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public boolean isCellValueString(Sheet workSheet, int row, int column) {
+		CellType cellType = workSheet.getRow(row).getCell(column)
+				.getCellTypeEnum();
+		if (cellType.equals(CellType.STRING)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public int getColNumForHeader(String sheetName, String attributeName) {
+		Sheet sheet = workbook.getSheet(sheetName);
+		int colNum = -1;
+		for (int i = 0; i < sheet.getRow(0).getPhysicalNumberOfCells(); i++) {
+			if (sheet.getRow(0).getCell(i).getStringCellValue()
+					.equalsIgnoreCase(attributeName)) {
+				colNum = i;
+				break;
+			}
+		}
+		return colNum;
 	}
 
 }

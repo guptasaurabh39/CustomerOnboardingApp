@@ -2,22 +2,24 @@ package com.guptasaurabh39.CustomerOnboardingApp.tests;
 
 import static io.restassured.RestAssured.given;
 
+import org.apache.poi.ss.usermodel.Row;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.testng.Assert;
-import org.testng.Reporter;
-import org.testng.ReporterConfig;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -116,7 +118,7 @@ public class testExcel {
 		}
 
 		if (!flgHaveAllEnities) {
-			Assert.fail("ASSERT : Missing tab/tabs for entties in config is/are"
+			logger.info("INFO : Missing tab/tabs for entties in config is/are"
 					+ missingTabs);
 		}
 	}
@@ -142,11 +144,13 @@ public class testExcel {
 				logger.debug("DEBUG : Entity Attribute Name = " + currAttrName);
 				if (rEx.isColumnHeaderAvailable(currentEntity.getName(),
 						currAttrName)) {
-					logger.info("ASSERT : Excel Tab Name = "
+					logger.debug("INFO : Excel Tab Name = "
 							+ currentEntity.getName() + ", Attribute Name = "
 							+ currAttrName + " exists.");
 				} else {
-					wEx.writeError(currentEntity.getName(), 0, 0, "Expected Column Name = " + currAttrName + " not available in excel file.");
+					wEx.writeError(currentEntity.getName(), 0, 0,
+							"Expected Column Name = " + currAttrName
+									+ " not available in excel file.");
 					logger.error("ERROR : Excel Tab Name = "
 							+ currentEntity.getName() + ", Attribute Name = "
 							+ currAttrName + " does not exist.");
@@ -157,4 +161,73 @@ public class testExcel {
 
 	}
 
+	@SuppressWarnings("deprecation")
+	@Test(enabled = true, priority = 3, dependsOnMethods = { "test_ExcelColumnHeader" }, description = "Excel column DataType test.")
+	public void test_ExcelColumnDataType() {
+		logger.info("TEST-SCENARIO : VALIDATE EXCEL COLUMN DATA-TYPE FOR TENANT = "
+				+ tenantId);
+		Entity currEntity;
+		String currEntityName;
+		Attribute currAttribute;
+		String currAttrDataType;
+		String currAttrName;
+		int colNumForAttr;
+		int dataRowCnt;
+
+		// For each Entity
+		for (int i = 0; i < myConfig.getEntities().length; i++) {
+			currEntity = myConfig.getEntities()[i].getEntity();
+			currEntityName = myConfig.getEntities()[i].getEntity().getName();
+			// For Each Attribute in Current Entity.
+			for (int j = 0; j < currEntity.getAttributes().length; j++) {
+				currAttribute = currEntity.getAttributes()[j].getAttribute();
+				currAttrDataType = currAttribute.getDataType();
+				currAttrName = currAttribute.getName();
+				dataRowCnt = rEx.getRowCount(rEx.getSheet(currEntityName));
+				colNumForAttr = rEx.getColNumForHeader(currEntityName,
+						currAttrName);
+				// For Each Row for Current Attribute.
+				for (int rowNum = 1; rowNum <= dataRowCnt; rowNum++) {
+					// IF Cell is Not Empty.
+					if (!(rEx.getSheet(currEntityName).getRow(rowNum).getCell(colNumForAttr, Row.RETURN_BLANK_AS_NULL) == null)) {
+						// IF Expected DataType is Integer
+						if (currAttrDataType.equalsIgnoreCase("Integer")) {
+							if (rEx.isCellValueNumeric(
+									rEx.getSheet(currEntityName), rowNum,
+									colNumForAttr)) {
+								logger.debug("INFO : " + currEntityName + ">>"
+										+ currAttrName + ">>" + rowNum
+										+ " is an Integer value.");
+							} else {
+								logger.error("ERROR : " + currEntityName + ">>"
+										+ currAttrName + ">>" + rowNum
+										+ " is not a Integer value.");
+								wEx.writeError(currEntityName, rowNum,
+										colNumForAttr,
+										"Expected DataType is Integer.");
+							}
+						}
+						// IF Expected DataType is String
+						else if (currAttrDataType.equalsIgnoreCase("String")) {
+							if (rEx.isCellValueString(
+									rEx.getSheet(currEntityName), rowNum,
+									colNumForAttr)) {
+								logger.debug("INFO : " + currEntityName + ">>"
+										+ currAttrName + ">>" + rowNum
+										+ " is a String value.");
+							} else {
+								logger.error("ERROR : " + currEntityName + ">>"
+										+ currAttrName + ">>" + rowNum
+										+ " is not a String value.");
+								wEx.writeError(currEntityName, rowNum,
+										colNumForAttr,
+										"Expected DataType is String.");
+							}
+						}
+					}
+				}
+
+			}
+		}
+	}
 }
