@@ -44,8 +44,8 @@ Hosted an local API for tenant configuration with "http://localhost:8080/tenants
 
 ```
 {
-entities: [
-{
+<br>entities: [
+<br>{
 entity: {
 name: "customer",
 attributes: [
