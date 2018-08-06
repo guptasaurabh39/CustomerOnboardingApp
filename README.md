@@ -1,8 +1,6 @@
-# QA Manager Assignment
-
-Problem- Customer Onboarding Application.
-Stack – React, Java, Spring, Hibernate, Oracle, Mongo
-Deployment – SAAS.
+### Customer Onboarding Application.
+#### Stack – React, Java, Spring, Hibernate, Oracle, Mongo
+#### Deployment – SAAS.
 The customer Onboarding Application enable customization and a tenant who buys this application can customize the fields to be captured, the validations to be performed, number of views, sub Views, and the workflow for approval. The entire configuration is stored as json in Mongo. When a user logs in based on this configuration dynamic views are presented so that the Customers can be onboarded.
 Majority of the Validations are applied in the UI from the configuration. Some Tenants already have customers onboarded when they join our platform and would want them migrated to our environment. For this we have provided an Excel template which can be uploaded. We need to support 1000 tenants uploading 50000 customers simultaneously for this upload. 
 Consider there is an API called /customers/upload (POST/MULTIPART)  and this receives the excel file
