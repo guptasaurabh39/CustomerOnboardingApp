@@ -40,96 +40,96 @@ c.	Providing a pipeline would be a plus (consider this will be executed in a gri
 
 Hosted an local API for tenant configuration with "http://localhost:8080/tenants/002/config" as below
 
-'''javascript
+```
 {
-entities: [
-{
-entity: {
-name: "customer",
-attributes: [
-{
-attribute: {
-id: "1",
-name: "customerId",
-dataType: "Integer",
-parentAttributeId: "",
-nullable: "false"
+   "entities":[
+      {
+         "entity":{
+            "name":"customer",
+            "attributes":[
+               {
+                  "attribute":{
+                     "id":"1",
+                     "name":"customerId",
+                     "dataType":"Integer",
+                     "parentAttributeId":"",
+                     "nullable":"false"
+                  }
+               },
+               {
+                  "attribute":{
+                     "id":"2",
+                     "name":"customerName",
+                     "dataType":"String",
+                     "parentAttributeId":"",
+                     "nullable":"false"
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "entity":{
+            "name":"address",
+            "attributes":[
+               {
+                  "attribute":{
+                     "id":"3",
+                     "name":"customerId",
+                     "dataType":"Integer",
+                     "parentAttributeId":"1",
+                     "nullable":"false"
+                  }
+               },
+               {
+                  "attribute":{
+                     "id":"4",
+                     "name":"addressLine",
+                     "dataType":"String",
+                     "parentAttributeId":"",
+                     "nullable":"false"
+                  }
+               },
+               {
+                  "attribute":{
+                     "id":"5",
+                     "name":"addressCity",
+                     "dataType":"String",
+                     "parentAttributeId":"",
+                     "nullable":"true"
+                  }
+               },
+               {
+                  "attribute":{
+                     "id":"6",
+                     "name":"addressState",
+                     "dataType":"String",
+                     "parentAttributeId":"",
+                     "nullable":"true"
+                  }
+               },
+               {
+                  "attribute":{
+                     "id":"7",
+                     "name":"addressZip",
+                     "dataType":"Integer",
+                     "parentAttributeId":"",
+                     "nullable":"true"
+                  }
+               },
+               {
+                  "attribute":{
+                     "id":"8",
+                     "name":"addressCountry",
+                     "dataType":"String",
+                     "parentAttributeId":"",
+                     "nullable":"true"
+                  }
+               }
+            ]
+         }
+      }
+   ]
 }
-},
-{
-attribute: {
-id: "2",
-name: "customerName",
-dataType: "String",
-parentAttributeId: "",
-nullable: "false"
-}
-}
-]
-}
-},
-{
-entity: {
-name: "address",
-attributes: [
-{
-attribute: {
-id: "3",
-name: "customerId",
-dataType: "Integer",
-parentAttributeId: "1",
-nullable: "false"
-}
-},
-{
-attribute: {
-id: "4",
-name: "addressLine",
-dataType: "String",
-parentAttributeId: "",
-nullable: "false"
-}
-},
-{
-attribute: {
-id: "5",
-name: "addressCity",
-dataType: "String",
-parentAttributeId: "",
-nullable: "true"
-}
-},
-{
-attribute: {
-id: "6",
-name: "addressState",
-dataType: "String",
-parentAttributeId: "",
-nullable: "true"
-}
-},
-{
-attribute: {
-id: "7",
-name: "addressZip",
-dataType: "Integer",
-parentAttributeId: "",
-nullable: "true"
-}
-},
-{
-attribute: {
-id: "8",
-name: "addressCountry",
-dataType: "String",
-parentAttributeId: "",
-nullable: "true"
-}
-}
-]
-}
-}
-]
-}
-'''
+```
 I am using <b>WireMock-1.57-standalone.jar</b> for hosting this API http://www.mocky.io/v2/5b675f4e320000bb04ee1277
