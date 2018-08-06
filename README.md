@@ -132,6 +132,4 @@ nullable: "true"
 ]
 }
 ```
-
-I am using WireMock-1.57-standalone.jar for hosting this API.
-http://www.mocky.io/v2/5b675f4e320000bb04ee1277
+I am using <b>WireMock-1.57-standalone.jar</b> for hosting this API http://www.mocky.io/v2/5b675f4e320000bb04ee1277
