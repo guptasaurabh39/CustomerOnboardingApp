@@ -14,8 +14,10 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+import com.beust.jcommander.Parameter;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,8 +41,37 @@ public class testExcel {
 	ReadExcel rEx;
 	WriteExcel wEx;
 
+	private boolean isAvailableInList(List<String> lstMtchPrntIDs,
+			String strValue) {
+		Iterator<String> iterator = lstMtchPrntIDs.iterator();
+		boolean flgFound = false;
+		while (iterator.hasNext()) {
+			if (iterator.next().equalsIgnoreCase(strValue)) {
+				flgFound = true;
+				break;
+			}
+		}
+		return flgFound;
+	}
+
+	public boolean equalLists(List<String> a, List<String> b) {
+		if (a == null && b == null)
+			return true;
+
+		if ((a == null && b != null) || (a != null && b == null)
+				|| (a.size() != b.size())) {
+			return false;
+		}
+
+		// Sort and compare the two lists
+		Collections.sort(a);
+		Collections.sort(b);
+		return a.equals(b);
+	}
+
 	@AfterClass
 	public void atLast() throws IOException {
+		logger.info("INFO : Error Excel file saved at " + outputFilePath);
 		wEx.saveExcel();
 	}
 
@@ -76,21 +107,6 @@ public class testExcel {
 		ObjectMapper objectMapper = new ObjectMapper();
 		myConfig = objectMapper.readValue(res.asString(), Config.class);
 
-	}
-
-	public boolean equalLists(List<String> a, List<String> b) {
-		if (a == null && b == null)
-			return true;
-
-		if ((a == null && b != null) || (a != null && b == null)
-				|| (a.size() != b.size())) {
-			return false;
-		}
-
-		// Sort and compare the two lists
-		Collections.sort(a);
-		Collections.sort(b);
-		return a.equals(b);
 	}
 
 	@Test(enabled = true, priority = 1, description = "Number and name of tabs in excel file should be same as in config received.")
@@ -271,25 +287,45 @@ public class testExcel {
 				srcParentAttributeId = srcAttribute.getParentAttributeId();
 				if (!(srcParentAttributeId.equals("") || srcParentAttributeId == null)) {
 					// Find the Parent Entity and Attribute
-					for (int prntEntyCnt = 0; prntEntyCnt < myConfig.getEntities().length; prntEntyCnt++) {
-						mtchEntity = myConfig.getEntities()[prntEntyCnt].getEntity();
-						for (int prntAtrCnt = 0; prntAtrCnt < mtchEntity.getAttributes().length; prntAtrCnt++) {
-							mtchAttribute = mtchEntity.getAttributes()[prntAtrCnt].getAttribute();
+					for (int prntEntyCnt = 0; prntEntyCnt < myConfig
+							.getEntities().length; prntEntyCnt++) {
+						mtchEntity = myConfig.getEntities()[prntEntyCnt]
+								.getEntity();
+						for (int prntAtrCnt = 0; prntAtrCnt < mtchEntity
+								.getAttributes().length; prntAtrCnt++) {
+							mtchAttribute = mtchEntity.getAttributes()[prntAtrCnt]
+									.getAttribute();
 							mtchAttrId = mtchAttribute.getId();
 							if (mtchAttrId.equals(srcParentAttributeId)) {
 								mtchAttrName = mtchAttribute.getName();
 								mtchEntityName = mtchEntity.getName();
 								// GET SOURCE ID LIST
-								List<String> lstSrcPrntIDs = rEx.getDataListByColumnName(srcEntityName, srcAttrName);
-								logger.debug("DEBUG : SOURCE : Data List : " + lstSrcPrntIDs.toString());
+								List<String> lstSrcPrntIDs = rEx
+										.getDataListByColumnName(srcEntityName,
+												srcAttrName);
+								logger.debug("DEBUG : SOURCE : Data List : "
+										+ lstSrcPrntIDs.toString());
 								// GET MATCHING ID LIST
-								List<String> lstMtchPrntIDs = rEx.getDataListByColumnName(mtchEntity.getName(), mtchAttrName);
-								logger.debug("DEBUG : PARENT : Data List : " + lstMtchPrntIDs.toString());
+								List<String> lstMtchPrntIDs = rEx
+										.getDataListByColumnName(
+												mtchEntity.getName(),
+												mtchAttrName);
+								logger.debug("DEBUG : PARENT : Data List : "
+										+ lstMtchPrntIDs.toString());
 								// REPORT ERROR IF EXISTS
-								for (int idCnt = 0; idCnt < lstSrcPrntIDs.size(); idCnt++) {
-									if (!(isAvailableInList(lstMtchPrntIDs, lstSrcPrntIDs.get(idCnt)))) {
-										logger.error("ERROR : " + srcEntityName + ">>" + srcAttrName + ">>" + (idCnt + 2) + " is not a valid value.");
-										wEx.writeError(srcEntityName, idCnt + 2, srcColNum + 1, "This is not a valid value, Please correct. This is foreign key of "	+ mtchEntityName + ">>" + mtchAttrName);
+								for (int idCnt = 0; idCnt < lstSrcPrntIDs
+										.size(); idCnt++) {
+									if (!(isAvailableInList(lstMtchPrntIDs,
+											lstSrcPrntIDs.get(idCnt)))) {
+										logger.error("ERROR : Entity[" + srcEntityName
+												+ "]>>Attribute[" + srcAttrName + "]>>RowNumber["
+												+ (idCnt + 2)
+												+ "] is not a valid value.");
+										wEx.writeError(srcEntityName,
+												idCnt + 2, srcColNum + 1,
+												"This is not a valid value, Please correct. This is foreign key of "
+														+ mtchEntityName + ">>"
+														+ mtchAttrName);
 									}
 								}
 
@@ -301,16 +337,13 @@ public class testExcel {
 		}
 
 	}
-
-	private boolean isAvailableInList(List<String> lstMtchPrntIDs, String strValue) {
-		Iterator<String> iterator = lstMtchPrntIDs.iterator();
-		boolean flgFound = false;
-		while(iterator.hasNext()){
-			if(iterator.next().equalsIgnoreCase(strValue)){
-				flgFound = true;
-				break;
-			}
-		}
-		return flgFound;
+	
+	
+	@Test(enabled = true, priority = 5, dependsOnMethods = { "test_ExcelParentAttribute" }, description = "Excel Attribute Nullable Validation.")
+	public void test_ExcelNullableAttribute() {
+		logger.info("TEST-SCENARIO : VALIDATE EXCEL NULLABLE ATTRIBUTE FOR TENANT = " + tenantId);
+		logger.info("INFO : STILL TO BE IMPLEMENTED.................");
 	}
+	
+
 }

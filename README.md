@@ -133,3 +133,7 @@ Hosted an local API for tenant configuration with "http://localhost:8080/tenants
 }
 ```
 I am using <b>WireMock-1.57-standalone.jar</b> for hosting this API http://www.mocky.io/v2/5b675f4e320000bb04ee1277
+
+
+
+![Alt text](Detailed_Arch.png?raw=true "Detailed Architecture")
