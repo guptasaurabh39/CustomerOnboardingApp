@@ -51,9 +51,9 @@ c.	Providing a pipeline would be a plus (consider this will be executed in a gri
 
 ## How to Use
 Application accept 3 parameters:
- - TenantID
- - Input Excel file complete path.
- - Output Excel file complete path. [Optional]
+	- TenantID
+	- Input Excel file complete path.
+	- Output Excel file complete path. [Optional]
 
 ```
 mvn clean compile test -DtenantID="001" -DinputFile="D:/guptasaurabh39_Git/Customer_0001.xlsx" -DinputFile="D:/guptasaurabh39_Git/Customer_0001.xlsx"
