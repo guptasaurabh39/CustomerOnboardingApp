@@ -59,3 +59,37 @@ Application accept 3 parameters:
 mvn clean compile test -DtenantID="001" -DinputFile="D:/guptasaurabh39_Git/Customer_0001.xlsx" -DinputFile="D:/guptasaurabh39_Git/Customer_0001.xlsx"
 mvn clean compile test -DtenantID="001" -DinputFile="D:/guptasaurabh39_Git/Customer_0001.xlsx"
 ```
+
+## Sample Console Logs
+```
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running TestSuite
+log4j: reset attribute= "false".
+log4j: Threshold ="null".
+log4j: Level value for root is  [INFO].
+log4j: root level set to INFO
+log4j: Class name: [org.apache.log4j.ConsoleAppender]
+log4j: Parsing layout of class: "org.apache.log4j.PatternLayout"
+log4j: Setting property [conversionPattern] to [%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n].
+log4j: Adding appender named [console] to category [root].
+2018-08-07 02:35:12 INFO  testExcel:89 - SETUP : Input File path = 'D:/guptasaurabh39_Git/Customer_0002.xlsx'
+2018-08-07 02:35:13 INFO  testExcel:96 - SETUP : Output File path = 'D:/guptasaurabh39_Git/Customer_0002_Err.xlsx'
+2018-08-07 02:35:13 INFO  testExcel:100 - SETUP : Tenant ID = 002
+2018-08-07 02:35:15 INFO  testExcel:114 - TEST-SCENARIO : VALLIDATING TAB NAME WITH ENTTIES IN CONFIG JSON FOR TENANT = 002
+2018-08-07 02:35:15 INFO  testExcel:146 - TEST-SCENARIO : VALLIDATING EXCEL COLUMN HEADER FOR TENANT = 002
+2018-08-07 02:35:15 INFO  testExcel:185 - TEST-SCENARIO : VALIDATE EXCEL COLUMN DATA-TYPE FOR TENANT = 002
+2018-08-07 02:35:15 INFO  testExcel:255 - TEST-SCENARIO : VALIDATE EXCEL PARENT ATTRIBUTE FOR TENANT = 002
+2018-08-07 02:35:15 ERROR testExcel:320 - ERROR : Entity[address]>>Attribute[customerId]>>RowNumber[3] is not a valid value.
+2018-08-07 02:35:15 ERROR testExcel:320 - ERROR : Entity[address]>>Attribute[customerId]>>RowNumber[6] is not a valid value.
+2018-08-07 02:35:15 ERROR testExcel:320 - ERROR : Entity[address]>>Attribute[customerId]>>RowNumber[8] is not a valid value.
+2018-08-07 02:35:15 ERROR testExcel:320 - ERROR : Entity[address]>>Attribute[customerId]>>RowNumber[9] is not a valid value.
+2018-08-07 02:35:15 INFO  testExcel:344 - TEST-SCENARIO : VALIDATE EXCEL NULLABLE ATTRIBUTE FOR TENANT = 002
+2018-08-07 02:35:15 INFO  testExcel:346 - INFO : STILL TO BE IMPLEMENTED.................
+2018-08-07 02:35:15 ERROR testExcel:378 - ERROR : customer>>customerId>>3 should not be BLANK/EMPTY.
+2018-08-07 02:35:15 ERROR testExcel:378 - ERROR : customer>>customerName>>2 should not be BLANK/EMPTY.
+2018-08-07 02:35:15 ERROR testExcel:378 - ERROR : address>>customerId>>4 should not be BLANK/EMPTY.
+2018-08-07 02:35:15 ERROR testExcel:378 - ERROR : address>>addressLine>>3 should not be BLANK/EMPTY.
+2018-08-07 02:35:15 INFO  testExcel:74 - INFO : Error Excel file saved at D:/guptasaurabh39_Git/Customer_0002_Err.xlsx
+```
