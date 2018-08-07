@@ -214,13 +214,13 @@ public class testExcel {
 							if (rEx.isCellValueNumeric(
 									rEx.getSheet(currEntityName), rowNum,
 									colNumForAttr)) {
-								logger.debug("DEBUG : " + currEntityName + ">>"
-										+ currAttrName + ">>" + rowNum
-										+ " is an Integer value.");
+								logger.debug("DEBUG : Entity[" + currEntityName + "]>>Attribute["
+										+ currAttrName + "]>>RowNumber[" + rowNum
+										+ "] is an Integer value.");
 							} else {
-								logger.error("ERROR : " + currEntityName + ">>"
-										+ currAttrName + ">>" + rowNum
-										+ " is not a Integer value.");
+								logger.error("ERROR : Entity[" + currEntityName + "]>>Attribute["
+										+ currAttrName + "]>>RowNumber[" + rowNum
+										+ "] is not a Integer value.");
 								wEx.writeError(currEntityName, rowNum,
 										colNumForAttr,
 										"Expected DataType is Integer.");
@@ -231,13 +231,13 @@ public class testExcel {
 							if (rEx.isCellValueString(
 									rEx.getSheet(currEntityName), rowNum,
 									colNumForAttr)) {
-								logger.debug("DEBUG : " + currEntityName + ">>"
-										+ currAttrName + ">>" + rowNum
-										+ " is a String value.");
+								logger.debug("DEBUG : Entity[" + currEntityName + "]>>Attribute["
+										+ currAttrName + "]>>RowNumber[" + rowNum
+										+ "] is a String value.");
 							} else {
-								logger.error("ERROR : " + currEntityName + ">>"
-										+ currAttrName + ">>" + rowNum
-										+ " is not a String value.");
+								logger.error("ERROR : Entity[" + currEntityName + "]>>Attribute["
+										+ currAttrName + "]>>RowNumber[" + rowNum
+										+ "] is not a String value.");
 								wEx.writeError(currEntityName, rowNum,
 										colNumForAttr,
 										"Expected DataType is String.");
@@ -317,9 +317,10 @@ public class testExcel {
 										.size(); idCnt++) {
 									if (!(isAvailableInList(lstMtchPrntIDs,
 											lstSrcPrntIDs.get(idCnt)))) {
-										logger.error("ERROR : Entity[" + srcEntityName
-												+ "]>>Attribute[" + srcAttrName + "]>>RowNumber["
-												+ (idCnt + 2)
+										logger.error("ERROR : Entity["
+												+ srcEntityName
+												+ "]>>Attribute[" + srcAttrName
+												+ "]>>RowNumber[" + (idCnt + 2)
 												+ "] is not a valid value.");
 										wEx.writeError(srcEntityName,
 												idCnt + 2, srcColNum + 1,
@@ -337,13 +338,57 @@ public class testExcel {
 		}
 
 	}
-	
-	
+
 	@Test(enabled = true, priority = 5, dependsOnMethods = { "test_ExcelParentAttribute" }, description = "Excel Attribute Nullable Validation.")
 	public void test_ExcelNullableAttribute() {
-		logger.info("TEST-SCENARIO : VALIDATE EXCEL NULLABLE ATTRIBUTE FOR TENANT = " + tenantId);
-		logger.info("INFO : STILL TO BE IMPLEMENTED.................");
+		logger.info("TEST-SCENARIO : VALIDATE EXCEL NULLABLE ATTRIBUTE FOR TENANT = "
+				+ tenantId);
+
+		Entity currEntity;
+		String currEntityName;
+		Attribute currAttribute;
+		String currAttrNullable;
+		String currAttrName;
+		int colNumForAttr;
+		int dataRowCnt;
+
+		// For each Entity
+		for (int i = 0; i < myConfig.getEntities().length; i++) {
+			currEntity = myConfig.getEntities()[i].getEntity();
+			currEntityName = myConfig.getEntities()[i].getEntity().getName();
+			// For Each Attribute in Current Entity.
+			for (int j = 0; j < currEntity.getAttributes().length; j++) {
+				currAttribute = currEntity.getAttributes()[j].getAttribute();
+				currAttrNullable = currAttribute.getNullable();
+				// if Nullable is False.
+				if (currAttrNullable.equalsIgnoreCase("false")) {
+					currAttrName = currAttribute.getName();
+					dataRowCnt = rEx.getRowCount(rEx.getSheet(currEntityName));
+					colNumForAttr = rEx.getColNumForHeader(currEntityName,
+							currAttrName);
+					// For Each Row for Current Attribute.
+					for (int rowNum = 1; rowNum <= dataRowCnt; rowNum++) {
+						// IF Cell is Not Empty.
+						if ((rEx.getSheet(currEntityName)
+								.getRow(rowNum)
+								.getCell(colNumForAttr,
+										Row.RETURN_BLANK_AS_NULL) == null)) {
+
+							logger.error("ERROR : Entity["
+												+ currEntityName
+												+ "]>>Attribute[" + currAttrName
+												+ "]>>RowNumber[" + rowNum + "] should not be BLANK/EMPTY.");
+							wEx.writeError(currEntityName, rowNum,
+									colNumForAttr,
+									"Should not be BLANK/EMPTY. Please enter valid data.");
+
+						}
+					}
+				}
+
+			}
+		}
+
 	}
-	
 
 }

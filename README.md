@@ -37,10 +37,25 @@ c.	Providing a pipeline would be a plus (consider this will be executed in a gri
 
 
 ## Assumpitons and Prerequisites
+1. I am using <b>WireMock-1.57-standalone.jar</b> for hosting this API http://www.mocky.io/v2/5b675f4e320000bb04ee1277
+	- Hosted an local API for tenant configuration with "http://localhost:8080/tenants/002/config". 
+2. Sample JOSN response I have hosted on my localhost as below:
+	- This is Sample JSON Configuration for [Tenant 001], having 3 entities as customer, address and office.(SampleConfig_001.json)
+	- This is Sample JSON Configuration for [Tenant 002], having 2 entities as customer and address.(SampleConfig_002.json)
+3. Sample input excel files.
+	- Input excel file for [Tenant 001]. (Customer_0001.xlsx)
+	- Input excel file for [Tenant 002]. (Customer_0002.xlsx)
 
-Hosted an local API for tenant configuration with "http://localhost:8080/tenants/002/config". 
-This is [Sample JSON Configuration for Tenant.](SampleConfig.json)
-I am using <b>WireMock-1.57-standalone.jar</b> for hosting this API http://www.mocky.io/v2/5b675f4e320000bb04ee1277
-
-
+## Automation Design and Architecture
 ![Alt text](Detailed_Arch.png?raw=true "Detailed Architecture")
+
+## How to Use
+Application accept 3 parameters:
+ - TenantID
+ - Input Excel file complete path.
+ - Output Excel file complete path. [Optional]
+
+```
+mvn clean compile test -DtenantID="001" -DinputFile="D:/guptasaurabh39_Git/Customer_0001.xlsx" -DinputFile="D:/guptasaurabh39_Git/Customer_0001.xlsx"
+mvn clean compile test -DtenantID="001" -DinputFile="D:/guptasaurabh39_Git/Customer_0001.xlsx"
+```

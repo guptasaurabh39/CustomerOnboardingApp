@@ -1,0 +1,133 @@
+{
+  "entities": [
+    {
+      "entity": {
+        "name": "customer",
+        "attributes": [
+          {
+            "attribute": {
+              "id": "1",
+              "name": "customerId",
+              "dataType": "Integer",
+              "parentAttributeId": "",
+              "nullable": "false"
+            }
+          },
+          {
+            "attribute": {
+              "id": "2",
+              "name": "customerName",
+              "dataType": "String",
+              "parentAttributeId": "",
+              "nullable": "false"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "entity": {
+        "name": "address",
+        "attributes": [
+          {
+            "attribute": {
+              "id": "3",
+              "name": "customerId",
+              "dataType": "Integer",
+              "parentAttributeId": "1",
+              "nullable": "false"
+            }
+          },
+          {
+            "attribute": {
+              "id": "4",
+              "name": "addressId",
+              "dataType": "Integer",
+              "parentAttributeId": "",
+              "nullable": "false"
+            }
+          },
+          {
+            "attribute": {
+              "id": "5",
+              "name": "addressLine",
+              "dataType": "String",
+              "parentAttributeId": "",
+              "nullable": "false"
+            }
+          },
+          {
+            "attribute": {
+              "id": "6",
+              "name": "addressCity",
+              "dataType": "String",
+              "parentAttributeId": "",
+              "nullable": "true"
+            }
+          },
+          {
+            "attribute": {
+              "id": "7",
+              "name": "addressState",
+              "dataType": "String",
+              "parentAttributeId": "",
+              "nullable": "true"
+            }
+          },
+          {
+            "attribute": {
+              "id": "8",
+              "name": "addressZip",
+              "dataType": "Integer",
+              "parentAttributeId": "",
+              "nullable": "true"
+            }
+          },
+          {
+            "attribute": {
+              "id": "9",
+              "name": "addressCountry",
+              "dataType": "String",
+              "parentAttributeId": "",
+              "nullable": "true"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "entity": {
+        "name": "office",
+        "attributes": [
+          {
+            "attribute": {
+              "id": "10",
+              "name": "AddressId",
+              "dataType": "Integer",
+              "parentAttributeId": "4",
+              "nullable": "false"
+            }
+          },
+          {
+            "attribute": {
+              "id": "11",
+              "name": "officeName",
+              "dataType": "String",
+              "parentAttributeId": "",
+              "nullable": "false"
+            }
+          },
+          {
+            "attribute": {
+              "id": "12",
+              "name": "description",
+              "dataType": "String",
+              "parentAttributeId": "",
+              "nullable": "true"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
